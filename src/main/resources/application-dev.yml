@@ -1,0 +1,5 @@
+SQL_USERNAME: "postgres"
+SQL_PASSWORD: "nart123"
+SQL_HOST: "localhost"
+SQL_PORT: "5432"
+SQL_DB: "simple_note"

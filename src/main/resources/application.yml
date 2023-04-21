@@ -1,0 +1,20 @@
+access-token:
+  private: "access-token-keys/private.key"
+  public: "access-token-keys/public.key"
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:postgresql://${SQL_HOST}:${SQL_PORT}/${SQL_DB}
+    username: ${SQL_USERNAME}
+    password: ${SQL_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+
+logging:
+  level:
+    org.springframework.security: DEBUG
