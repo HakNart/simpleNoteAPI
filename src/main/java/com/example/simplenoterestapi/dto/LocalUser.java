@@ -11,7 +11,7 @@ import java.util.Collection;
 * */
 public class LocalUser extends User {
 
-    public LocalUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
+    public LocalUser(String email, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+        super(email, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
     }
 }

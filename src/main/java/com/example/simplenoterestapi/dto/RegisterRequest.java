@@ -1,6 +1,5 @@
 package com.example.simplenoterestapi.dto;
 
-import com.example.simplenoterestapi.util.validator.PasswordMatches;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -8,7 +7,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SignupRequest {
+public class RegisterRequest {
 
     @NotEmpty
     private String username;

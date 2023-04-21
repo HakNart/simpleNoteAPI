@@ -3,10 +3,14 @@ package com.example.simplenoterestapi.service;
 import com.example.simplenoterestapi.dto.LocalUser;
 import com.example.simplenoterestapi.model.User;
 import com.example.simplenoterestapi.util.AuthUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class LocalUserDetailService implements UserDetailsService {
     private final UserService userService;
 
@@ -15,6 +19,7 @@ public class LocalUserDetailService implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public LocalUser loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userService.findUserByEmail(email);
         if (user == null) {

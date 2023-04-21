@@ -3,12 +3,11 @@ package com.example.simplenoterestapi.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -16,6 +15,8 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User extends BaseEntity {
 
     @NaturalId(mutable = true)
@@ -33,13 +34,13 @@ public class User extends BaseEntity {
     private String secret;
 
     @JsonManagedReference
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
     @JoinTable(
-            name = "UserRole",
+            name = "User_Role",
             joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "id")}
     )
-    private Set<Role> roles = new HashSet<>();
+    private Set<Role> roles;
 
     public User(String email, String password) {
         this.email = email;
