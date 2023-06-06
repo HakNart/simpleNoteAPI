@@ -89,7 +89,7 @@ public class KeyUtils {
                 fos.write(keySpec.getEncoded());
             }
         } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Problem generating the keys");
         }
 
         return keyPair;

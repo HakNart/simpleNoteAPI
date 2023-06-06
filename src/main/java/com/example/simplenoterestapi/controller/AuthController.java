@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -44,24 +45,24 @@ public class AuthController {
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        LocalUser localUser = (LocalUser) authentication.getPrincipal();
-        String jwt = getToken(localUser);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityUser securityUser = (SecurityUser) authentication.getPrincipal();
+        String jwt = getToken(securityUser);
+        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, securityUser.getUsername()));
     }
 
-    private String getToken(LocalUser localUser) {
+    private String getToken(SecurityUser securityUser) {
         Instant now = Instant.now();
         long expiry = 36000L;
         // @formatter:off
-        String scope = localUser.getAuthorities().stream()
+        String scope = securityUser.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiry))
-                .subject(localUser.getUsername()) //user-email instead
+                .subject(securityUser.getUsername()) //user-email instead
                 .claim("scope", scope)
                 .build();
         // @formatter:on
@@ -72,7 +73,7 @@ public class AuthController {
         try {
             User user = userService.registerNewUser(registerRequest);
         } catch (UserAlreadyExistAuthenticationException e) {
-            log.error("Exception Occurred", e);
+            log.error("Exception Occurred", e.getMessage());
             return new ResponseEntity<>(new ApiResponse(false, "Email Address already in use!"), HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok().body(new ApiResponse(true, "User registered successfully"));

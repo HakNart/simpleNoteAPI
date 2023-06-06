@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${SQL_USERNAME}
+      POSTGRES_PASSWORD: ${SQL_PASSWORD}
+      POSTGRES_DB: ${SQL_DB}
+    ports:
+      - '5432:5432'
+    networks:
+      - apinetwork
+
+  api:
+    depends_on:
+      - db
+    container_name: apiApp
+    build: .
+    image: api:v1
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+    expose:
+      - 8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:${SQL_PORT}/${SQL_DB}
+      SPRING_DATASOURCE_USERNAME: ${SQL_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SQL_PASSWORD}
+      SERVICE_TAGS: prod
+      SERVICE_NAME: springapi
+    networks:
+      - apinetwork
+networks:
+  apinetwork:
+    driver: bridge

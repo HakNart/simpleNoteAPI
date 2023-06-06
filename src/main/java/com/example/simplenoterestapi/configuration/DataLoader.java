@@ -1,7 +1,9 @@
 package com.example.simplenoterestapi.configuration;
 
+import com.example.simplenoterestapi.model.Note;
 import com.example.simplenoterestapi.model.Role;
 import com.example.simplenoterestapi.model.User;
+import com.example.simplenoterestapi.repository.NoteRepository;
 import com.example.simplenoterestapi.repository.RoleRepository;
 import com.example.simplenoterestapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -22,6 +24,7 @@ public class DataLoader implements CommandLineRunner {
     private boolean alreadySetup = false;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final NoteRepository noteRepository;
     private final PasswordEncoder passwordEncoder;
     @Override
     @Transactional
@@ -37,6 +40,14 @@ public class DataLoader implements CommandLineRunner {
         // Create users
         createUserIfNotFound("user@email.com", passwordEncoder.encode("user123"), Set.of(userRole), "User");
         createUserIfNotFound("admin@email.com", passwordEncoder.encode("admin123"), Set.of(adminRole, userRole), "Administrator");
+        // Get users
+        User user1 = userRepository.findByEmailIgnoreCase("user@email.com");
+        // Create notes
+        Note note1  = Note.builder()
+                .content("Here is note of user")
+                .title("Note 1")
+                .user(user1).build();
+        noteRepository.save(note1);
         alreadySetup = true;
     }
 

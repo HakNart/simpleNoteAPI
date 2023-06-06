@@ -1,6 +1,5 @@
 package com.example.simplenoterestapi.configuration;
 
-import com.example.simplenoterestapi.service.LocalUserDetailService;
 import com.example.simplenoterestapi.util.KeyUtils;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -11,7 +10,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -34,16 +32,17 @@ import java.util.Map;
 public class WebSecurityConfig {
 
     final KeyUtils keyUtils;
+    final CORSCustomizer corsCustomizer;
 
 
-
-    public WebSecurityConfig(KeyUtils keyUtils) {
+    public WebSecurityConfig(KeyUtils keyUtils, CORSCustomizer corsCustomizer) {
         this.keyUtils = keyUtils;
-
+        this.corsCustomizer = corsCustomizer;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        corsCustomizer.corsCustomizer(http);
         http
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/auth/*").permitAll()
@@ -88,4 +87,5 @@ public class WebSecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 }

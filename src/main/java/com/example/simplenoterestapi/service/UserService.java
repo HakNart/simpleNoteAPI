@@ -7,6 +7,7 @@ import com.example.simplenoterestapi.model.User;
 import com.example.simplenoterestapi.repository.RoleRepository;
 import com.example.simplenoterestapi.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,11 @@ public class UserService {
         user = userRepository.save(user);
         userRepository.flush();
         return user;
+    }
+
+    public User getAuthenticatedUser() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return findUserByEmail(userEmail);
     }
 
     private User buildUser(final RegisterRequest registerRequest) {
